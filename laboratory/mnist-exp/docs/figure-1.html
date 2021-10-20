@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                font-family: 'menlo';
+                list-style: none;
+                font-size: 9;
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                padding: 0;
+            }
+
+            .proof-table {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .result-item {
+            }
+
+            .result {
+                text-align: center;
+                line-height: 28px;
+            }
+
+            .result-tuple {
+                font-weight: bold;
+                font-size: 15px;
+                display: block;
+            }
+
+            .proof-prob {
+                display: none;
+            }
+
+            .proofs {
+
+            }
+
+            .proof {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .proof.empty .fact-tuple {
+                color: rgba(0, 0, 0, 0) !important;
+            }
+
+            .proof-0 {
+                background-color: rgba(218, 232, 252, 0.8);
+            }
+
+            .proof-1 {
+                background-color: rgba(218, 232, 252, 0.7);
+            }
+
+            .proof-2 {
+                background-color: rgba(218, 232, 252, 0.6);
+            }
+
+            .proof-3 {
+                background-color: rgba(218, 232, 252, 0.5);
+            }
+
+            .proof-4 {
+                background-color: rgba(218, 232, 252, 0.4);
+            }
+
+            .proof-5 {
+                background-color: rgba(218, 232, 252, 0.3);
+            }
+
+            .proof-6 {
+                background-color: rgba(218, 232, 252, 0.2);
+            }
+
+            .facts {
+                white-space: nowrap;
+            }
+
+            .fact {
+                font-size: 13px;
+                display: inline;
+                color: rgba(0, 0, 0, 0.2);
+            }
+
+            .result img {
+                width: 13px;
+            }
+
+            .fact img {
+                opacity: 0.4;
+                width: 12px;
+            }
+
+            .result-item.active .fact img {
+                opacity: 1;
+            }
+            .result-item.active .fact {
+                color: rgba(0, 0, 0, 1);
+            }
+
+            .fact + .fact::before {
+                content: ', ';
+                color: rgba(0, 0, 0, 0.2);
+            }
+
+            .result-item.active .fact + .fact::before {
+                color: rgba(0, 0, 0, 1);
+            }
+
+            .fact-prob {
+                display: none;
+            }
+
+            .fact-prob {
+
+            }
+
+            .fact-tuple::before {
+                /* content: '::'; */
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="proof-table" id="proof-table">
+            <li class="result-item">
+                <div class="result">
+                    <span class="result-tuple">s(5)</span>
+                </div>
+                <ul class="proofs">
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="result-item">
+                <div class="result">
+                    <span class="result-tuple">s(5)</span>
+                </div>
+                <ul class="proofs">
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="proof">
+                        <ul class="facts">
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                            <li class="fact">
+                                <span class="fact-prob">0.9</span>
+                                <span class="fact-tuple">d(0,1)</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <script>
+            var html = "";
+            var prev_is_dot = false;
+
+            var first_probs = {
+                "0": 0.01,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.85,
+                "4": 0.01,
+                "5": 0.05,
+                "6": 0.01,
+                "7": 0.01,
+                "8": 0.03,
+                "9": 0.01,
+            };
+            var second_probs = {
+                "0": 0.05,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.01,
+                "4": 0.01,
+                "5": 0.01,
+                "6": 0.01,
+                "7": 0.85,
+                "8": 0.01,
+                "9": 0.03,
+            };
+            var active_result = 10;
+
+            for (var result = 0; result <= 18; result++) {
+
+                if ([1, 2, 3, 5, 6, 7, 11, 12, 13, 15, 16, 17].indexOf(result) >= 0) {
+                    if (!prev_is_dot) {
+                        html += "<li class=\"result-item\">";
+                        html +=     "<div class=\"result\">";
+                        html +=         "<span class=\"result-tuple\">...</span>";
+                        html +=     "</div>";
+                        html +=     "<ul class=\"proofs\">";
+                        for (var i = 0; i < (result < 10 ? result + 1 : 18 - result); i++) {
+                            html += "<li class=\"proof empty proof-" + i + "\">";
+                            html +=     "<ul class=\"facts\">";
+                            html +=         "<li class=\"fact\">";
+                            html +=             "<span class=\"fact-tuple\">xx</span>";
+                            html +=         "</li>";
+                            html +=     "</ul>";
+                            html += "</li>";
+                        }
+                        html +=     "</ul>";
+                        html += "</li>";
+                    }
+                    prev_is_dot = true;
+                    continue;
+                } else {
+                    prev_is_dot = false;
+                }
+
+                html += "<li class=\"result-item" + (result == active_result ? " active" : "") + "\">";
+                html +=     "<div class=\"result\">";
+                html +=         "<span class=\"result-tuple\">sum(<img src=img/MNIST3.png>,<img src=img/MNIST7.png>," + result + ")</span>";
+                html +=     "</div>";
+                html +=     "<ul class=\"proofs\">";
+
+                var arr = [];
+                for (var da = 0; da < 10; da++) {
+                    for (var db = 0; db < 10; db++) {
+                        if (da + db == result) {
+                            arr.push([da, db, first_probs[da] * second_probs[db]]);
+                        }
+                    }
+                }
+                arr.sort(([a1, b1, p1], [a2, b2, p2]) => p1 < p2);
+
+                arr.forEach(([da, db, p], i) => {
+                    html += "<li class=\"proof proof-" + i + "\">";
+                    html +=     "<span class=\"proof-prob\">" + p + "</span>";
+                    html +=     "<ul class=\"facts\">";
+                    html +=         "<li class=\"fact\">";
+                    html +=             "<span class=\"fact-prob\">" + first_probs[da] + "</span>";
+                    html +=             "<span class=\"fact-tuple\">d(<img src=\"img/MNIST3.png\">," + da + ")</span>";
+                    html +=         "</li>";
+                    html +=         "<li class=\"fact\">";
+                    html +=             "<span class=\"fact-prob\">" + second_probs[db] + "</span>";
+                    html +=             "<span class=\"fact-tuple\">d(<img src=\"img/MNIST7.png\">," + db + ")</span>";
+                    html +=         "</li>";
+                    html +=     "</ul>";
+                    html += "</li>";
+                });
+
+                html +=     "</ul>";
+                html += "</li>";
+            }
+            document.getElementById("proof-table").innerHTML = html;
+        </script>
+    </body>
+</html>

@@ -1,0 +1,18 @@
+[package]
+name = "scallop-runtime"
+version = "0.1.0"
+authors = ["Ziyang Li <liby99@icloud.com>"]
+edition = "2018"
+
+[dependencies]
+sdd = { path = "../sdd" }
+scallop-compiler = { path = "../compiler" }
+tch = { git = "https://github.com/liby99/tch-rs.git", optional = true }
+openssl = { version = "0.10", features = ["vendored"], optional = true }
+rayon = "1.5"
+
+[dev-dependencies]
+rand = "0.8"
+
+[features]
+torch = ["tch", "openssl"]

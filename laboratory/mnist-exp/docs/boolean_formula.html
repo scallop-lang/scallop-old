@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                font-family: 'menlo';
+                list-style: none;
+                font-size: 9;
+                line-height: 30px;
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                padding: 0;
+            }
+
+            .objects {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .object{
+                display: flex;
+                flex-direction: row;
+            }
+
+            .proof-prob {
+                display: none;
+            }
+
+            .facts {
+                display: flex;
+                flex-direction: row;
+                white-space: nowrap;
+            }
+
+            .fact {
+                font-size: 13px;
+                line-height: 30px;
+            }
+
+            .fact + .fact::before {
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 20px;
+                line-height: 30px;
+                content: " \2227 ";
+                color: rgba(0, 0, 0, 0.7);
+            }
+
+            .fact:last-child::after {
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 20px;
+                line-height: 30px;
+                content: "\2228";
+                color: rgba(0, 0, 0, 0.7);
+            }
+
+            .coloncolon {
+                color: rgba(0, 0, 0, 0.3);
+            }
+
+            .fact-prob {
+                display: none;
+                color: rgb(75, 135, 255);
+            }
+
+            .fact-tuple img {
+                width: 12px;
+            }
+
+            .paren {
+                opacity: 0.3;
+            }
+
+            .and, .or {
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .and {
+                color: rgba(0, 106, 255, 0.8);
+            }
+
+            .or {
+                color: rgba(255, 145, 0, 0.8);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="prob-db" id="prob-db">
+            <ul class="objects" id="objects">
+                <li class="object">
+                    <span class="object_id">1</span>
+                    <ul class="facts">
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="object">
+                    <span class="object_id">2</span>
+                    <ul class="facts">
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <script>
+            var html = "";
+            var prev_is_dot = false;
+
+            var first_probs = {
+                "0": 0.01,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.85,
+                "4": 0.01,
+                "5": 0.05,
+                "6": 0.01,
+                "7": 0.01,
+                "8": 0.03,
+                "9": 0.01,
+            };
+            var second_probs = {
+                "0": 0.05,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.01,
+                "4": 0.01,
+                "5": 0.01,
+                "6": 0.01,
+                "7": 0.85,
+                "8": 0.01,
+                "9": 0.03,
+            };
+
+            var arr = [];
+            for (var da = 0; da < 10; da++) {
+                for (var db = 0; db < 10; db++) {
+                    if (da + db == 10) {
+                        arr.push([da, db, first_probs[da] * second_probs[db]]);
+                    }
+                }
+            }
+            arr.sort(([a1, b1, p1], [a2, b2, p2]) => p1 < p2);
+
+            arr.forEach(([da, db, p], i) => {
+                html += "<li class=\"proof proof-" + i + "\">";
+                html +=     "<span class=\"paren\">(</span>";
+                html +=     "<span class=\"fact-tuple\">d(<img src=\"img/MNIST3.png\">," + da + ")</span>";
+                html +=     "<span class=\"and\">&and;</span>";
+                html +=     "<span class=\"fact-tuple\">d(<img src=\"img/MNIST7.png\">," + db + ")</span>";
+                html +=     "<span class=\"paren\">)</span>";
+                if (i < arr.length - 1) {
+                    html +=     "<span class=\"or\">&or;</span>";
+                }
+                html += "</li>";
+            });
+
+            document.getElementById("objects").innerHTML = html;
+        </script>
+    </body>
+</html>

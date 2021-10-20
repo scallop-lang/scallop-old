@@ -1,0 +1,5 @@
+decl digit(Symbol, Int).
+decl sort_2(Int).
+
+sort_2(0) :- digit(0, DA), digit(1, DB), DA <= DB.
+sort_2(1) :- digit(0, DA), digit(1, DB), DA > DB.

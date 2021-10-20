@@ -1,0 +1,11 @@
+[package]
+name = "sclrepl"
+version = "0.1.0"
+authors = ["Ziyang Li <liby99@icloud.com>"]
+edition = "2018"
+
+[dependencies]
+scallop-runtime = { path = "../runtime" }
+scallop-compiler = { path = "../compiler" }
+structopt = "0.3"
+linefeed = "0.6"

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                font-family: 'menlo';
+                list-style: none;
+                font-size: 9;
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                margin: 0;
+                padding: 0;
+            }
+
+            .objects {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .object{
+                display: flex;
+                flex-direction: row;
+                /* padding-left: 10px;
+                padding-right: 10px;
+                text-align: center; */
+            }
+
+            .facts {
+                display: flex;
+                flex-direction: row;
+                white-space: nowrap;
+            }
+
+            .fact {
+                font-size: 13px;
+                line-height: 30px;
+            }
+
+            .fact + .fact::before {
+                content: "; ";
+                color: rgba(0, 0, 0, 0.7);
+            }
+
+            .fact:last-child::after {
+                content: ".";
+                color: rgba(0, 0, 0, 0.3);
+            }
+
+            .coloncolon {
+                color: rgba(0, 0, 0, 0.3);
+            }
+
+            .fact-prob {
+                color: rgb(108, 142, 191, 1.0);
+            }
+
+            .fact-tuple img {
+                width: 11px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="prob-db" id="prob-db">
+            <ul class="objects" id="objects">
+                <li class="object">
+                    <span class="object_id">1</span>
+                    <ul class="facts">
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="object">
+                    <span class="object_id">2</span>
+                    <ul class="facts">
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                        <li class="fact">
+                            <span class="fact-prob">0.9</span>
+                            <span class="fact-tuple">d(0,1)</span>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <script>
+            var html = "";
+            var prev_is_dot = false;
+
+            var first_probs = {
+                "0": 0.01,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.85,
+                "4": 0.01,
+                "5": 0.05,
+                "6": 0.01,
+                "7": 0.01,
+                "8": 0.03,
+                "9": 0.01,
+            };
+            var second_probs = {
+                "0": 0.05,
+                "1": 0.01,
+                "2": 0.01,
+                "3": 0.01,
+                "4": 0.01,
+                "5": 0.01,
+                "6": 0.01,
+                "7": 0.85,
+                "8": 0.01,
+                "9": 0.03,
+            };
+
+            let obj_html = (probs, img_src) => {
+                html += "<li class=\"object\">";
+                html +=     "<span class=\"object_id\"></span>";
+                html +=         "<ul class=\"facts\">";
+                for (const [key, value] of Object.entries(probs)) {
+                    html +=         "<li class=\"fact\">";
+                    html +=             "<span class=\"fact-prob\">" + value + "</span>"
+                    html +=             "<span class=\"coloncolon\">::</span>"
+                    html +=             "<span class=\"fact-tuple\">d(<img src=\"" + img_src + "\">," + key + ")</span>";
+                    html +=         "</li>";
+                }
+                html +=         "</ul>";
+                html += "</li>";
+            }
+
+            obj_html(first_probs, "img/MNIST3.png");
+            obj_html(second_probs, "img/MNIST7.png");
+
+            document.getElementById("objects").innerHTML = html;
+        </script>
+    </body>
+</html>

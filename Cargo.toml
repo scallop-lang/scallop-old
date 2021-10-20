@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+  "codegen",
+  "compiler",
+  "runtime",
+  "sclc",
+  "sclrepl",
+  "sdd",
+]

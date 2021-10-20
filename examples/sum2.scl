@@ -1,0 +1,4 @@
+decl digit(Symbol, Int).
+decl sum(Symbol, Symbol, Int).
+
+sum(A, B, AN + BN) :- digit(A, AN), digit(B, BN).

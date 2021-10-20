@@ -1,0 +1,4 @@
+decl edge(Symbol, Symbol).
+decl bidirected(Symbol, Symbol).
+
+bidirected(A, B) :- edge(A, B), edge(B, A).

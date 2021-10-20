@@ -1,0 +1,4 @@
+decl rela_a(Int, Int).
+decl result(Int, Int).
+
+result(A, 1) :- rela_a(_, A).

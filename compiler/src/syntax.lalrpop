@@ -1,0 +1,282 @@
+use std::str::FromStr;
+
+use crate::ast::*;
+use crate::common::{BinaryOp, UnaryOp};
+use crate::parser::*;
+
+grammar;
+
+// Tokens
+match {
+  // Decl
+  ":-",
+  ":",
+  ";",
+  ",",
+  ".",
+  "_",
+  "::",
+  "~",
+
+  // Compare
+  "==",
+  "<=",
+  ">=",
+  "<",
+  ">",
+  "!=",
+
+  // Arith
+  "+",
+  "-",
+  "*",
+  "/",
+  "&&",
+  "||",
+  "!",
+
+  // Brackets
+  "(",
+  ")",
+
+  // Keywords
+  "Symbol",
+  "Int",
+  "Bool",
+  "String",
+  "true",
+  "false",
+  "decl",
+  "query",
+
+  // Comments and Whitespaces
+  r"\s*" => { },
+  r"//[^\n\r]*[\n\r]*" => { },
+  r"/\*([^\*]*\*+[^\*/])*([^\*]*\*+|[^\*])*\*/" => { },
+
+  // Regex
+  r"[a-z][a-z_0-9]*" => lower_case_name,
+  r"[A-Z][a-zA-Z_0-9]*" => initial_upper_case_name,
+  r"-?[0-9]+" => int,
+  r"-?\d+(\.\d+)(e-?\d+)?" => float,
+  r#""[^"]*""# => string,
+}
+
+// Helpers
+
+Separated<E, S>: Vec<E> = {
+  <rs: (<E> S)*> <e: E?> => rs.into_iter().chain(e.into_iter()).collect()
+}
+
+SeparatedStrict<E, S>: Vec<E> = {
+  <rs: (<E> S)*> <e: E> => rs.into_iter().chain(vec![e].into_iter()).collect()
+}
+
+AtLeastOneSeparated<E, S>: Vec<E> = {
+  <r1: E> => vec![r1],
+  <r1: E> <rs: (S <E>)+> S? => vec![vec![r1], rs].concat(),
+}
+
+AtLeastOneSeparatedStrict<E, S>: Vec<E> = {
+  <r1: E> => vec![r1],
+  <r1: E> <rs: (S <E>)+> => vec![vec![r1], rs].concat(),
+}
+
+AtLeastTwoSeparated<E, S>: Vec<E> = {
+  <r1: E> <rs: (S <E>)+> S? => vec![vec![r1], rs].concat(),
+}
+
+AtLeastTwoSeparatedStrict<E, S>: Vec<E> = {
+  <r1: E> <rs: (S <E>)+> => vec![vec![r1], rs].concat(),
+}
+
+// Literals
+
+LowerCaseName: String = lower_case_name => (<>).to_string();
+
+InitialUpperCaseName: String = initial_upper_case_name => (<>).to_string();
+
+Int: i64 = int => i64::from_str(<>).unwrap();
+
+Float: f32 = float => f32::from_str(<>).unwrap();
+
+StringLiteral: String = <s: string> => s[1..s.len() - 1].into();
+
+EndOfItem: () = ".";
+
+// Arguments
+
+Argument: Argument = LogicalExpr;
+
+LogicalExpr: Argument = {
+  <a: @L> <lhs: LogicalExpr> <op: LogicalOp> <rhs: ComparisonExpr> <b: @L> => {
+    Argument::Binary(BinaryExpr::span(a, b, (op, Box::new(lhs), Box::new(rhs))))
+  },
+  ComparisonExpr,
+}
+
+LogicalOp: BinaryOp = {
+  "&&" => BinaryOp::And,
+  "||" => BinaryOp::Or,
+}
+
+ComparisonExpr: Argument = {
+  <a: @L> <lhs: AddSubExpr> <op: ComparisonOp> <rhs: AddSubExpr> <b: @L> => {
+    Argument::Binary(BinaryExpr::span(a, b, (op, Box::new(lhs), Box::new(rhs))))
+  },
+  AddSubExpr,
+}
+
+ComparisonOp: BinaryOp = {
+  "==" => BinaryOp::Eq,
+  "!=" => BinaryOp::Ne,
+  "<" => BinaryOp::Lt,
+  "<=" => BinaryOp::Lte,
+  ">" => BinaryOp::Gt,
+  ">=" => BinaryOp::Gte,
+}
+
+AddSubExpr: Argument = {
+  <a: @L> <lhs: AddSubExpr> <op: AddSub> <rhs: MulDivExpr> <b: @L> => {
+    Argument::Binary(BinaryExpr::span(a, b, (op, Box::new(lhs), Box::new(rhs))))
+  },
+  MulDivExpr,
+}
+
+AddSub: BinaryOp = {
+  "+" => BinaryOp::Add,
+  "-" => BinaryOp::Sub,
+}
+
+MulDivExpr: Argument = {
+  <a: @L> <lhs: MulDivExpr> <op: MultDiv> <rhs: AtomArgument> <b: @L> => {
+    Argument::Binary(BinaryExpr::span(a, b, (op, Box::new(lhs), Box::new(rhs))))
+  },
+  UnaryExpr,
+}
+
+MultDiv: BinaryOp = {
+  "*" => BinaryOp::Mult,
+  "/" => BinaryOp::Div,
+}
+
+UnaryExpr: Argument = {
+  <a: @L> <op: UnaryOp> <arg: UnaryExpr> <b: @L> => {
+    Argument::Unary(UnaryExpr::span(a, b, (op, Box::new(arg))))
+  },
+  AtomExpr,
+}
+
+UnaryOp: UnaryOp = {
+  "+" => UnaryOp::Pos,
+  "-" => UnaryOp::Neg,
+  "!" => UnaryOp::Not,
+}
+
+AtomExpr: Argument = {
+  AtomArgument,
+  "(" <t: Argument> ")" => t,
+}
+
+AtomArgument: Argument = {
+  <a: @L> "_" <b: @L> => Argument::Wildcard(Wildcard::span(a, b, ())),
+  <c: Constant> => Argument::Constant(c),
+  <a: @L> <n: InitialUpperCaseName> <b: @L> => Argument::Variable(Variable::span(a, b, n)),
+  <a: @L> <n: LowerCaseName> <b: @L> => Argument::Constant(Constant::span(a, b, ConstantNode::Symbol(n))),
+}
+
+Constant: Constant = {
+  <a: @L> <i: Int> <b: @L> => Constant::span(a, b, ConstantNode::Integer(i)),
+  <a: @L> "true" <b: @L> => Constant::span(a, b, ConstantNode::Boolean(true)),
+  <a: @L> "false" <b: @L> => Constant::span(a, b, ConstantNode::Boolean(false)),
+  <a: @L> <s: StringLiteral> <b: @L> => Constant::span(a, b, ConstantNode::String(s.to_string())),
+}
+
+pub Atom: Atom = {
+  <a: @L> <n: LowerCaseName> <b: @L> => {
+    Atom::span(a, b, (n, vec![]))
+  },
+  <a: @L> <n: LowerCaseName> "(" <args: Separated<Argument, ",">> ")" <b: @L> => {
+    Atom::span(a, b, (n, args))
+  }
+}
+
+UnaryConstraint: UnaryConstraint = {
+  <a: @L> "!" <arg: AddSubExpr> <b: @L> => {
+    UnaryConstraint::span(a, b, (UnaryOp::Not, arg))
+  }
+}
+
+BinaryConstraint: BinaryConstraint = {
+  <a: @L> <op1: AddSubExpr> <op: ComparisonOp> <op2: AddSubExpr> <b: @L> => {
+    BinaryConstraint::span(a, b, (op, op1, op2))
+  }
+}
+
+Constraint: Constraint = {
+  // TODO: Solve unary binary constraint conflict
+  // <u: UnaryConstraint> => Constraint::Unary(u),
+  <b: BinaryConstraint> => Constraint::Binary(b),
+}
+
+Literal: Literal = {
+  <a: @L> <atom: Atom> <b: @L> => Literal::span(a, b, LiteralNode::Pos(atom)),
+  <a: @L> "~" <atom: Atom> <b: @L> => Literal::span(a, b, LiteralNode::Neg(atom)),
+  <a: @L> <c: Constraint> <b: @L> => Literal::span(a, b, LiteralNode::Constraint(c)),
+}
+
+Type: Type = {
+  <a: @L> "Symbol" <b: @L> => Type::span(a, b, TypeNode::Symbol),
+  <a: @L> "Int" <b: @L> => Type::span(a, b, TypeNode::Integer),
+  <a: @L> "Bool" <b: @L> => Type::span(a, b, TypeNode::Boolean),
+  <a: @L> "String" <b: @L> => Type::span(a, b, TypeNode::String),
+}
+
+Decl: Decl = {
+  <a: @L> "decl" <name: LowerCaseName> EndOfItem <b: @L> => {
+    Decl::span(a, b, (name, vec![]))
+  },
+  <a: @L> "decl" <name: LowerCaseName> "(" ")" EndOfItem <b: @L> => {
+    Decl::span(a, b, (name, vec![]))
+  },
+  <a: @L> "decl" <name: LowerCaseName> "(" <types: AtLeastOneSeparated<Type, ",">> ")" EndOfItem <b: @L> => {
+    Decl::span(a, b, (name, types))
+  },
+}
+
+Fact: Fact = {
+  <a: @L> <p: Float> "::" <atom: Atom> <b: @L> => {
+    Fact::span(a, b, (Some(p), atom))
+  },
+  <a: @L> <atom: Atom> <b: @L> => {
+    Fact::span(a, b, (None, atom))
+  }
+}
+
+Disjunction: Disjunction = {
+  <a: @L> <facts: AtLeastTwoSeparated<Fact, ";">> EndOfItem <b: @L> => {
+    Disjunction::span(a, b, facts)
+  }
+}
+
+pub Rule: Rule = {
+  <a: @L> <head: Atom> ":-" <body: AtLeastOneSeparated<Literal, ",">> EndOfItem <b: @L> => {
+    Rule::span(a, b, (head, body))
+  }
+}
+
+Query: Query = {
+  <a: @L> "query" <atom: Atom> EndOfItem <b: @L> => {
+    Query::span(a, b, atom)
+  },
+}
+
+pub Item: Item = {
+  <d: Decl> => Item::Decl(d),
+  <f: Fact> EndOfItem => Item::Fact(f),
+  <d: Disjunction> => Item::Disjunction(d),
+  <r: Rule> => Item::Rule(r),
+  <q: Query> => Item::Query(q),
+}
+
+pub Items: Vec<Item> = <Item*>;

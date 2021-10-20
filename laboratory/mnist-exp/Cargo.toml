@@ -1,0 +1,14 @@
+[package]
+name = "mnist-exp"
+version = "0.1.0"
+authors = ["Ziyang Li <liby99@icloud.com>"]
+edition = "2018"
+
+[dependencies]
+scallop-runtime = { path = "../../runtime", feature = ["torch"] }
+scallop-codegen = { path = "../../codegen" }
+profiler = { path = "../profiler" }
+tch = { git = "https://github.com/liby99/tch-rs.git" }
+anyhow = "1.0"
+rayon = "1.5"
+structopt = "0.3"

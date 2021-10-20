@@ -1,0 +1,8 @@
+decl name(Symbol, String).
+decl attr(Symbol, String).
+decl target(Symbol).
+
+0.8::name(1, "giraffe").
+0.3::attr(1, "tall").
+
+target(A) :- name(A, "giraffe"), attr(A, "tall").

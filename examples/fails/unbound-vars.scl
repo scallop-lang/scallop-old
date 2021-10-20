@@ -1,0 +1,4 @@
+decl a(Symbol, Symbol).
+decl b(Symbol, Symbol, Symbol).
+
+a(A, C) :- b(A, B, B).

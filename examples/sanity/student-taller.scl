@@ -1,0 +1,3 @@
+decl student(Symbol, Int).
+decl taller(Symbol, Symbol).
+taller(A, B) :- student(A, TA), student(B, TB), TA > TB.

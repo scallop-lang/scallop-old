@@ -1,0 +1,12 @@
+decl digit(Symbol, Int).
+decl sort_3(Int).
+decl digit_abc(Int, Int, Int).
+
+digit_abc(DA, DB, DC) :- digit(0, DA), digit(1, DB), digit(2, DC).
+
+sort_3(0) :- digit_abc(DA, DB, DC), DA <= DB, DB <= DC.
+sort_3(1) :- digit_abc(DA, DB, DC), DA <= DC, DC < DB.
+sort_3(2) :- digit_abc(DA, DB, DC), DB < DA, DA <= DC.
+sort_3(3) :- digit_abc(DA, DB, DC), DB <= DC, DC < DA.
+sort_3(4) :- digit_abc(DA, DB, DC), DC < DA, DA <= DB.
+sort_3(5) :- digit_abc(DA, DB, DC), DC < DB, DB < DA.

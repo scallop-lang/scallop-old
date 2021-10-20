@@ -1,0 +1,5 @@
+decl path(Symbol, Symbol).
+decl edge(Symbol, Symbol).
+
+path(A, B) :- edge(A, B).
+path(A, C) :- path(B, C), edge(A, B).

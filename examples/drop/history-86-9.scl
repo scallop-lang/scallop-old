@@ -1,0 +1,113 @@
+// decl noun_id(Symbol, String).
+// decl verb_id(Symbol, String).
+decl num_id(Symbol, String, String).
+
+decl sv(Symbol, Symbol).
+decl vo(Symbol, Symbol).
+// decl noun_num(Symbol, Symbol).
+decl verb_num(Symbol, Symbol).
+// decl noun_verb(Symbol, Symbol).
+
+// Sentence 1.
+num_id(0, "early 2000s", "year").
+// noun_id(1, "computer").
+// noun_id(2, "flash").
+// verb_id(3, "install").
+// verb_id(4, "display").
+// noun_id(5, "web pages").
+// noun_id(6, "games").
+// verb_id(7, "playback").
+// noun_id(8, "content").
+
+sv(1, 3).
+sv(1, 4).
+sv(1, 7).
+vo(3, 2).
+vo(4, 5).
+vo(4, 6).
+vo(7, 8).
+verb_num(3, 0). // "install", "early 2000s"
+
+// Sentence 2
+// noun_id(9, "Youtube").
+// verb_id(10, "found").
+// noun_id(11, "employee").
+// verb_id(12, "used").
+// noun_id(13, "Flash player").
+// noun_id(14, "means").
+// verb_id(15, "display").
+// noun_id(16, "content").
+// noun_id(17, "web").
+num_id(18, "2005", "year").
+
+sv(11, 10).
+sv(9, 13).
+sv(14, 15).
+vo(10, 9).
+vo(12, 13).
+vo(15, 16).
+verb_num(10, 18). // "found", "2005"
+verb_num(12, 18). // "used", "2005"
+
+// In 2007, YouTube offered videos in HTML5 format to support the iPhone and iPad, which did not support Flash Player.
+// Sentence 6
+// noun_id(19, "Youtube").
+// verb_id(20, "offer").
+// noun_id(21, "videos").
+// noun_id(22, "HTML5").
+// noun_id(23, "format").
+// noun_id(24, "iPhone").
+// noun_id(25, "iPad").
+// verb_id(26, "support").
+// noun_id(27, "Flash Player").
+num_id(28, "2007", "year").
+verb_num(20, 28). // "offered", "2007"
+sv(19, 20).
+
+// In 2015, YouTube switched to HTML5 technology on all devices, however it will preserve the Flash-based video player for older web browsers.
+// Sentence 9
+// noun_id(29, "Youtube").
+// verb_id(30, "switch").
+// noun_id(31, "HTML5").
+// noun_id(32, "technology").
+// noun_id(33, "device").
+// noun_id(34, "it").
+// verb_id(35, "preserve").
+// noun_id(36, "player").
+// noun_id(37, "browsers").
+num_id(38, "2015", "year").
+verb_num(30, 38). // "offered", "2007"
+sv(29, 30).
+vo(30, 31).
+vo(30, 32).
+
+decl happens_year(Symbol, Symbol).
+happens_year(Vid, Yid) :- verb_num(Vid, Yid), num_id(Yid, _, "year").
+
+// Should be realized using external function
+decl bigger_than(Symbol, Symbol).
+bigger_than(38, 28).
+bigger_than(28, 18).
+bigger_than(38, 18).
+
+// Q: What event happened first , Youtube switching to HTML5 technology on all devices , or Youtube being founded by former PayPal employees ?
+// The first correct program
+decl target(String).
+target("Youtube switching to HTML5 technology on all devices") :-
+  happens_year(30, Yid1), // "switch", Year1
+  happens_year(10, Yid2), // "found", Year2
+  bigger_than(Yid1, Yid2).
+target("Youtube being founded by former PayPal employees") :-
+  happens_year(30, Yid1), // "switch", Year1
+  happens_year(10, Yid2), // "found", Year2
+  bigger_than(Yid2, Yid1).
+
+decl target3(String, Symbol, Symbol).
+target3("Youtube switching to HTML5 technology on all devices", Yid1, Yid2) :-
+  vo(Vid1, 31), happens_year(Vid1, Yid1), // "html5"
+  sv(11, Vid2), happens_year(Vid2, Yid2), // "employee"
+  bigger_than(Yid1, Yid2).
+target3("Youtube being founded by former PayPal employees", Yid1, Yid2) :-
+  vo(Vid1, 31), happens_year(Vid1, Yid1), // "html5"
+  sv(11, Vid2), happens_year(Vid2, Yid2), // "employee"
+  bigger_than(Yid2, Yid1).

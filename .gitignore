@@ -1,0 +1,14 @@
+Cargo.lock
+
+# Compiled
+/target/
+/lab/
+
+# MacOS
+.DS_Store
+
+# Generated
+*.dot
+
+# Editor
+.vscode

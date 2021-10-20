@@ -1,0 +1,18 @@
+decl name(Symbol, String).
+decl attr(Symbol, String).
+decl is_a(String, String).
+decl target(Symbol).
+
+name(A, B) :- name(A, N), is_a(N, B).
+
+is_a("giraffe", "animal").
+is_a("tiger", "animal").
+is_a("wolf", "animal").
+
+0.8::name(1, "giraffe");
+0.01::name(1, "tiger");
+0.18::name(1, "wolf").
+
+0.3::attr(1, "tall").
+
+target(A) :- name(A, "animal"), attr(A, "tall").

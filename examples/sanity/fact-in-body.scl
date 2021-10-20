@@ -1,0 +1,6 @@
+decl a(Symbol).
+decl b(Symbol).
+decl c(Symbol, Symbol, Symbol).
+decl result(Symbol, Symbol).
+
+result(A, B) :- a(A), b(B), c(1, 2, 3).

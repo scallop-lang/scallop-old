@@ -1,0 +1,4 @@
+decl a(Symbol, Int).
+decl b(Int, Symbol).
+
+b(A, B) :- a(B, A), B == 1.

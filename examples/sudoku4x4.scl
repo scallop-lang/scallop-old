@@ -1,0 +1,47 @@
+decl number(Int).
+
+decl two_nums(Int, Int).
+
+decl row(Int, Int, Int, Int).
+
+decl two_rows(Int, Int, Int, Int,
+              Int, Int, Int, Int).
+
+decl sudoku4x4(Int, Int, Int, Int,
+                Int, Int, Int, Int,
+                Int, Int, Int, Int,
+                Int, Int, Int, Int).
+
+number(1).
+number(2).
+number(3).
+number(4).
+
+two_nums(A, B) :-
+  number(A),
+  number(B),
+  A != B.
+
+row(A, B, C, D) :-
+  two_nums(A, B),
+  two_nums(C, D),
+  A != C, A != D, B != C, B != D.
+
+two_rows(A1, B1, C1, D1, A2, B2, C2, D2) :-
+  row(A1, B1, C1, D1),
+  row(A2, B2, C2, D2),
+  A1 != A2, A1 != B2, B1 != A2, B1 != B2,
+  C1 != C2, C1 != D2, D1 != C2, D1 != D2.
+
+sudoku4x4(A1, B1, C1, D1,
+          A2, B2, C2, D2,
+          A3, B3, C3, D3,
+          A4, B4, C4, D4) :-
+  two_rows(A1, B1, C1, D1,
+            A2, B2, C2, D2),
+  two_rows(A3, B3, C3, D3,
+            A4, B4, C4, D4),
+  A1 != A3, A1 != A4, A2 != A3, A2 != A4,
+  B1 != B3, B1 != B4, B2 != B3, B2 != B4,
+  C1 != C3, C1 != C4, C2 != C3, C2 != C4,
+  D1 != D3, D1 != D4, D2 != D3, D2 != D4.

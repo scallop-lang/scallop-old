@@ -1,0 +1,8 @@
+decl head.
+decl tail.
+decl result(Symbol).
+
+head.
+
+result(1) :- head.
+result(0) :- tail.

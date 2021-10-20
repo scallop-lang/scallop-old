@@ -1,0 +1,8 @@
+[package]
+name = "sdd"
+version = "0.1.0"
+authors = ["Ziyang Li <liby99@icloud.com>"]
+edition = "2018"
+
+[dependencies]
+petgraph = "0.5"

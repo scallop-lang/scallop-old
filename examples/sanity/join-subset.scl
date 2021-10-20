@@ -1,0 +1,5 @@
+decl rela_a(Symbol, Symbol, Symbol).
+decl rela_b(Symbol, Symbol).
+decl result(Symbol, Symbol).
+
+result(A, B) :- rela_a(A, B, C), rela_b(B, C).
