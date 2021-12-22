@@ -2,6 +2,12 @@
 
 A scalable probabilistic datalog engine with Rust.
 
+## NOTE
+
+A new version of `scallop` is currently under development!
+In addition to all we have in the first version, we will support more beautiful syntax, more language constructs, python binding, integration with PyTorch, REPL, and much more!
+Stay tuned while we are working on it. Thanks a lot for your interest in this project!
+
 ## Usage
 
 The Scallop system is best integrated inside of the Rust context.
